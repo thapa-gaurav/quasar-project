@@ -1,15 +1,24 @@
+import LoginForm from 'src/components/LoginForm.vue'
+import PostDashboard from 'src/components/PostDashboard.vue'
+import CreatePost from 'src/components/CreatePost.vue'
+import EditPost from 'src/components/EditPost.vue'
+
 const routes = [
   {
-    path: '/',
-    component: () => import('layouts/MainLayout.vue'),
-    children: [{ path: '', component: () => import('pages/IndexPage.vue') }],
+    path: '/login',
+    component: LoginForm,
   },
-
-  // Always leave this as last one,
-  // but you can also remove it
   {
-    path: '/:catchAll(.*)*',
-    component: () => import('pages/ErrorNotFound.vue'),
+    path: '/dashboard',
+    component: PostDashboard,
+  },
+  {
+    path: '/create',
+    component: CreatePost,
+  },
+  {
+    path: '/edit',
+    component: EditPost,
   },
 ]
 
