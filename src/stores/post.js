@@ -1,4 +1,5 @@
-import { defineStore, acceptHMRUpdate } from 'pinia'
+import { acceptHMRUpdate, defineStore } from 'pinia'
+import axiosInstance from 'src/utils/axiosInstance.js'
 
 export const usePostStore = defineStore('posts', {
   state: () => ({
@@ -9,7 +10,7 @@ export const usePostStore = defineStore('posts', {
   actions: {
     async getPosts() {
       try {
-        const res = await fetch('http://localhost:8000/api/posts/index', {
+        const res = await axiosInstance.get('posts/index', {
           headers: {
             'Content-Type': 'application/json',
             Accept: 'application/json',
@@ -17,37 +18,36 @@ export const usePostStore = defineStore('posts', {
           },
         })
 
-        const data = await res.json()
+        const data = await res.data
         this.posts = data.data
         console.log(this.posts)
-        if (!res.ok) {
+        if (!(res.statusText === 'OK')) {
           console.log('Unable to fetch data.')
         }
       } catch (error) {
         console.log(error)
       }
     },
-    async createPost(newPost) {
+    async createPost(formData) {
+      console.log(formData)
       try {
-        const res = await fetch('http://localhost:8000/api/posts/store', {
-          method: 'POST',
+        const res = await axiosInstance.post('posts/store', formData, {
           headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'multipart/form-data',
             Accept: 'application/json',
             Authorization: 'Bearer ' + localStorage.getItem('userToken'),
           },
-          body: JSON.stringify(newPost),
         })
-
-        if (!res.ok) {
+        if (!(res.statusText === 'OK')) {
           console.log('Unable to store post.')
         } else {
-          const data = await res.json()
+          const data = await res.data
           console.log(data)
           this.posts = [data, ...this.posts]
           // console.log(this.posts)
           // this.posts = [data.data, this.posts]
           // console.log(this.posts)
+          await this.getPosts()
           this.router.push('/dashboard')
         }
       } catch (error) {
@@ -56,19 +56,18 @@ export const usePostStore = defineStore('posts', {
     },
     async deletePost(postId) {
       try {
-        const res = await fetch('http://localhost:8000/api/post/delete/' + postId, {
-          method: 'delete',
+        const res = await axiosInstance.delete('/post/delete/' + postId, {
           headers: {
             'Content-Type': 'application/json',
             Accept: 'application/json',
             Authorization: 'Bearer ' + localStorage.getItem('userToken'),
           },
         })
-
-        if (!res.ok) {
+        console.log(res.statusText)
+        if (!(res.statusText === 'OK')) {
           console.log('Unable to delete post.')
         } else {
-          const data = await res.json()
+          const data = await res.data
           console.log(data)
         }
       } catch (error) {
@@ -78,24 +77,63 @@ export const usePostStore = defineStore('posts', {
     async editPosts() {
       console.log(this.currentPost.caption)
       try {
-        const res = await fetch('http://localhost:8000/api/posts/update/' + this.currentPost.id, {
-          method: 'PATCH',
+        const res = await axiosInstance.patch(
+          'posts/update/' + this.currentPost.id,
+          this.currentPost,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              Accept: 'application/json',
+              Authorization: 'Bearer ' + localStorage.getItem('userToken'),
+            },
+          },
+        )
+        if (!(res.statusText === 'OK')) {
+          console.log('Unable to edit post.')
+        } else {
+          const data = await res.data
+          console.log(data)
+          await this.getPosts()
+          this.router.push('/dashboard')
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    async showPost(post){
+      try{
+        const res = await axiosInstance.get(`/posts/show/${post}`,{
           headers: {
             'Content-Type': 'application/json',
             Accept: 'application/json',
             Authorization: 'Bearer ' + localStorage.getItem('userToken'),
           },
-          body: JSON.stringify(this.currentPost),
         })
-
-        if (!res.ok) {
-          console.log('Unable to edit post.')
+        if (!(res.statusText === 'OK')) {
+          console.log('Unable to show post.')
         } else {
-          const data = await res.json()
-          console.log(data)
-          this.router.push('/dashboard')
+          const data = await res.data
+          this.currentPost = data.data
+          console.log(this.currentPost)
         }
-      } catch (error) {
+
+      }catch (error){
+        console.log(error)
+      }
+    },
+
+    async changeImage(post){
+      try{
+        const res = await axiosInstance.post('/post/image/replace/'+this.currentPost.id,post,{
+          headers:{
+            'Content-Type':'multipart/form-data',
+            Authorization: 'Bearer ' + localStorage.getItem('userToken'),
+          }
+        })
+        if(!(res.statusText === 'OK')) {
+          console.log('Unable to change image.')
+        }
+      }catch (error){
         console.log(error)
       }
     },

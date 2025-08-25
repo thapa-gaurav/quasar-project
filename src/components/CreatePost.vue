@@ -9,6 +9,7 @@
 
         <q-input label="text" filled type="text" v-model="text" outlined />
 
+        <q-input label="image" filled type="file" v-model="imageFile" @change="onFileChange" outlined/>
         <q-card-actions>
           <q-btn label="Submit" type="submit" @click="onOKClick" color="primary" />
           <q-btn color="primary" label="Cancel" @click="onDialogCancel" />
@@ -23,7 +24,7 @@
 import { useDialogPluginComponent } from 'quasar'
 
 import { usePostStore } from 'src/stores/post'
-import { ref } from 'vue'
+import {ref} from 'vue'
 
 defineEmits([...useDialogPluginComponent.emits])
 const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } = useDialogPluginComponent()
@@ -31,13 +32,32 @@ const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } = useDialogPluginC
 const postStore = usePostStore()
 const caption = ref('')
 const text = ref('')
+const imageFile = ref(null) // will hold FileList
+const selectedFile = ref(null) // actual File
+
+const formData = new FormData()
+
+// watch(imageFile,(newFile)=>{
+  // if(!newFile) return
+  // formData.append('image',newFile)
+  // console.log(newFile)
+// })
+
+function onFileChange(){
+  if(imageFile.value && imageFile.value[0]){
+    selectedFile.value = imageFile.value[0]
+  }
+}
 
 const onOKClick = async () => {
   onDialogOK()
-  const newPost = {
-    caption: caption.value,
-    text: text.value,
-  }
-  await postStore.createPost(newPost)
+  formData.append('caption',caption.value)
+  formData.append('text',text.value)
+  formData.append('image',selectedFile.value)
+  // const newPost = {
+  //   caption: caption.value,
+  //   text: text.value,
+  // }
+  await postStore.createPost(formData)
 }
 </script>

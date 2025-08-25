@@ -1,24 +1,24 @@
-import { defineStore, acceptHMRUpdate } from 'pinia'
+import { acceptHMRUpdate, defineStore } from 'pinia'
+import axiosInstance from 'src/utils/axiosInstance.js'
 
 export const useAuthStore = defineStore('auths', {
-  state: () => ({}),
+  state: () => ({
+    loginToken: null
+  }),
   getters: {},
   actions: {
     async handleLogin(credentials) {
       try {
-        const res = await fetch('http://localhost:8000/api/login', {
-          method: 'POST',
+        const res = await axiosInstance.post('/login', credentials, {
           headers: {
             Accept: 'application/json',
-            'Content-type': 'application/json',
+            'Content-Type': 'application/json',
           },
-          body: JSON.stringify(credentials),
         })
-
-        if (!res.ok) {
+        if (!(res.statusText === 'OK')) {
           console.log('Unable to login.')
         } else {
-          const data = await res.json()
+          const data = await res.data
           localStorage.setItem('userToken', data.token)
           this.loginToken = localStorage.getItem('userToken')
           this.router.push('/dashboard')
@@ -29,17 +29,19 @@ export const useAuthStore = defineStore('auths', {
     },
     async handleLogout() {
       try {
-        const res = await fetch('http://localhost:8000/api/logout', {
-          method: 'post',
-          headers: {
-            Accept: 'application/json',
-            'Content-type': 'application/json',
-            Authorization: 'Bearer ' + localStorage.getItem('userToken'),
+        const res = await axiosInstance.post(
+          '/logout',
+          {},
+          {
+            headers: {
+              Accept: 'application/json',
+              'Content-type': 'application/json',
+              Authorization: 'Bearer ' + localStorage.getItem('userToken'),
+            },
           },
-        })
-
-        if (!res.ok) {
-          console.log('unble to logout')
+        )
+        if (!(res.statusText === 'OK')) {
+          console.log('unable to logout')
         } else {
           localStorage.removeItem('userToken')
           this.router.push('/login')
@@ -50,10 +52,7 @@ export const useAuthStore = defineStore('auths', {
     },
     async checkAuth() {
       try {
-        if (localStorage.getItem('userToken')) {
-          return true
-        }
-        return false
+        return !!localStorage.getItem('userToken')
       } catch (error) {
         console.log(error)
       }

@@ -2,17 +2,24 @@
   <div class="q-pa-md">
     <div class="row justify-between">
       <LogoutForm />
-      <q-btn color="secondary" size="sm" @click="create" label="create" />
+      <q-btn color="secondary" label="create" size="sm" @click="create" />
     </div>
-    <q-table title="posts" :rows="postStore.posts" :columns="columns" row-key="id">
-      <template v-slot:body-cell-delete="props">
+    <q-table :columns="columns" :rows="postStore.posts" row-key="id" title="posts">
+<!--      <template v-slot:body-cell-delete="props">-->
+<!--        <q-td :props="props">-->
+<!--          <q-btn color="primary" label="delete" outline size="sm" @click="confirm(props.row.id)" />-->
+<!--        </q-td>-->
+<!--      </template>-->
+<!--      <template v-slot:body-cell-edit="props">-->
+<!--        <q-td :props="props">-->
+<!--          <q-btn color="accent" label="edit" outline size="sms" @click="edit(props.row)" />-->
+<!--        </q-td>-->
+<!--      </template>-->
+      <template v-slot:body-cell-functions="props">
         <q-td :props="props">
-          <q-btn label="delete" color="primary" size="sm" @click="confirm(props.row.id)" outline />
-        </q-td>
-      </template>
-      <template v-slot:body-cell-edit="props">
-        <q-td :props="props">
-          <q-btn label="edit" color="accent" size="sms" @click="edit(props.row)" outline />
+          <q-btn color="accent" label="delete" outline size="sms" @click="confirm(props.row.id)" />
+          <q-btn color="accent" label="edit" outline size="sms" @click="edit(props.row)" />
+          <q-btn color="accent" label="show" outline size="sms" @click="show(props.row.id)"/>
         </q-td>
       </template>
     </q-table>
@@ -27,6 +34,8 @@ import { onMounted } from 'vue'
 import { useQuasar } from 'quasar'
 import EditPost from './EditPost.vue'
 import CreatePost from './CreatePost.vue'
+import ShowPost from "components/ShowPost.vue";
+
 const $q = useQuasar()
 const postStore = usePostStore()
 const columns = [
@@ -47,14 +56,8 @@ const columns = [
     field: 'text',
   },
   {
-    name: 'delete',
-    label: 'delete',
-    field: '',
-  },
-  {
-    name: 'edit',
-    label: 'edit',
-    field: '',
+    name:'functions',
+    label:'functions',
   },
 ]
 
@@ -66,8 +69,8 @@ const confirm = (postId) => {
     persistent: true,
   })
     .onOk(async () => {
-      postStore.deletePost(postId)
-      postStore.getPosts()
+      await postStore.deletePost(postId)
+      await postStore.getPosts()
     })
     .onCancel(() => {
       console.log('Canceled deletion.')
@@ -99,11 +102,23 @@ const create = () => {
     persistent: true,
   })
     .onOk(() => {
-      console.log('New post created.')
+      console.log('Creating new post.')
     })
     .onCancel(() => {
       console.log('post creation canceled.')
     })
+}
+
+const show = async (post)=>{
+  await postStore.showPost(post);
+  $q.dialog({
+    component:ShowPost,
+    persistent:true,
+  }).onOk(()=>{
+    console.log("A post was shown.")
+  }).onCancel(()=>{
+    console.log('Show post cancelled');
+  })
 }
 
 // const deletePost = async (postId) => {
