@@ -21,7 +21,7 @@
 <!--  <div class="q-pa-md row items-start q-gutter-md">-->
     <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card class="my-card">
-      <img :src="`http://localhost:8000/storage/${thisPost.imageUrl}`" alt="alternate image">
+      <img :src="`${postImage}`" alt="alternate image">
 
       <q-card-section>
         <div class="text-h6">{{thisPost.caption}}</div>
@@ -31,7 +31,7 @@
         {{thisPost.text}}
         <q-btn label="Ok" @click="onOKClick" color="primary" />
         <q-btn label="Replace" @click="replaceImg" color="secondary"/>
-
+        <q-btn label="Detach" @click="detachImg" class="bg-negative"/>
         <input type="file" ref="fileInput" @change="onFileSelected" style="display: none">
       </q-card-section>
     </q-card>
@@ -47,23 +47,30 @@ const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent()
 
 const postStore = usePostStore()
 const thisPost = ref(postStore.currentPost)
-
+const postImage =  ref(postStore.currentPost.imageUrl)
 const fileInput = ref(null)
 function onOKClick() {
   onDialogOK()
-  // postStore.editPosts(thisPost)
 }
 
 function  replaceImg(){
   fileInput.value.click()
 }
 
-function onFileSelected(event){
+async function  onFileSelected(event){
   const file = event.target.files[0]
 
   if(!file) return
   const formData = new FormData()
   formData.append('image',file)
-  postStore.changeImage(formData)
+  await postStore.changeImage(formData)
+  postImage.value  = postStore.currentPost.imageUrl
+
+}
+async function detachImg(){
+  await postStore.detachImage()
+  postImage.value  = postStore.currentPost.imageUrl
+  console.log(postImage.value)
+  // postImage = postStore.currentPost.imageUrl
 }
 </script>

@@ -5,6 +5,7 @@ export const usePostStore = defineStore('posts', {
   state: () => ({
     posts: [],
     currentPost: null,
+    
   }),
   getters: {},
   actions: {
@@ -132,6 +133,27 @@ export const usePostStore = defineStore('posts', {
         })
         if(!(res.statusText === 'OK')) {
           console.log('Unable to change image.')
+        }else {
+          alert('Changed image successfully.')
+          await this.showPost(this.currentPost.id)
+        }
+      }catch (error){
+        console.log(error)
+      }
+    },
+    async detachImage(){
+      try {
+        const res = await axiosInstance.post('/post/image/detach/'+this.currentPost.id,{},{
+        headers:{
+          'Content-Type':'multipart/form-data',
+          Authorization:'Bearer ' + localStorage.getItem('userToken'),
+        }
+        })
+        if(!(res.statusText === 'OK')){
+          console.log('Unable to detach image.')
+        }else {
+          alert(res.data.message)
+          await this.showPost(this.currentPost.id)
         }
       }catch (error){
         console.log(error)

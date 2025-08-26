@@ -26,7 +26,7 @@ const login = () => {
   }
   authStore.handleLogin(credentials)
   if (authStore.loginToken) {
-    router.push('/dasboard')
+    router.push('/dashboard')
   }
 }
 </script>
