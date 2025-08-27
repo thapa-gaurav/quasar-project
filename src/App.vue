@@ -12,8 +12,8 @@
 
       <q-tabs align="left">
         <q-route-tab to="/dashboard" name="dashboard" label="List" />
-        <q-route-tab to="/create" name="create" label="Create" />
-        <q-route-tab name="articles" label="Articles" />
+        <q-route-tab to="/permission" name="permission" label="Permission" />
+        <q-route-tab to="/role" name="role" label="Roles" />
       </q-tabs>
     </q-header>
 

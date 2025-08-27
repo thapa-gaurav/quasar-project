@@ -5,7 +5,7 @@ export const usePostStore = defineStore('posts', {
   state: () => ({
     posts: [],
     currentPost: null,
-    
+
   }),
   getters: {},
   actions: {
