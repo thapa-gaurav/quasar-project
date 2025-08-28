@@ -8,12 +8,15 @@
           </q-avatar>
           Title
         </q-toolbar-title>
+        <q-tabs align="right" shrink>
+          <q-route-tab name="tab1" label="Tab 1" />
+        </q-tabs>
       </q-toolbar>
-
       <q-tabs align="left">
         <q-route-tab to="/dashboard" name="dashboard" label="List" />
         <q-route-tab to="/permission" name="permission" label="Permission" />
         <q-route-tab to="/role" name="role" label="Roles" />
+        <q-route-tab to="/user" name="user" label="Users"/>
       </q-tabs>
     </q-header>
 
