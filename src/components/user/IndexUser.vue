@@ -2,9 +2,9 @@
   <div class="q-pa-md">
     <div class="row justify-between">
       <!--      <LogoutForm />-->
-      <q-btn color="secondary" label="create" size="sm" @click="create" />
+      <q-btn color="secondary" label="create" size="sm" @click="create"/>
     </div>
-    <q-table :columns="columns" :rows="roleStore.roles" row-key="id" title="Roles">
+    <q-table :columns="columns" :rows="userStore.users" row-key="id" title="Users">
       <!--      <template v-slot:body-cell-functions="props">-->
       <!--        <q-td :props="props">-->
       <!--          <q-btn color="accent" label="delete" outline size="sms" @click="confirm(props.row.id)" />-->
@@ -14,7 +14,7 @@
       <!--      </template>-->
       <template v-slot:body-cell-actions="props">
         <q-td :props="props">
-          <q-btn color="accent" label="delete" outline size="sms" @click="confirm(props.row.id)"/>
+          <q-btn color="accent" label="delete" outline size="sms" @click="confirmDelete(props.row.id)"/>
           <q-btn color="accent" label="edit" outline size="sms" @click="edit(props.row)"/>
         </q-td>
       </template>
@@ -25,60 +25,64 @@
 
 <script setup>
 import {onMounted} from "vue";
-import {useRoleStore} from "stores/roleStore"
-import { useQuasar } from 'quasar'
-import CreateRole from "components/roles/CreateRole.vue";
-import EditRole from "components/roles/EditRole.vue";
-const roleStore = useRoleStore()
+import {useQuasar} from 'quasar'
+import {useUserStore} from "stores/userStore.js";
+import CreateUser from "components/user/CreateUser.vue";
+import EditUser from "components/user/EditUser.vue";
+const userStore = useUserStore()
 const columns = [
   {
-    name:'name',
-    required:true,
-    label:'ID',
-    field:'id'
+    name: 'id',
+    required: true,
+    label: 'ID',
+    field: 'id'
   },
   {
-    name: 'role',
-    label: 'Roles',
+    name: 'name',
+    label: 'Name',
     field: 'name'
   },
   {
-    name:'actions',
+    name: 'email',
+    label: 'Email',
+    field: 'email'
+  },
+  {
+    name: 'actions',
     label: 'actions'
   }
 ]
 
 const $q = useQuasar()
-const create = () =>{
+const create = () => {
   $q.dialog({
-    title:'Create new Role',
-    component:CreateRole,
-    persistent:true,
+    title: 'Create new User.',
+    component: CreateUser,
+    persistent: true,
   })
-    .onOk(()=>{
-      console.log('Creating new Role')
-    }).onCancel(()=>{
-    console.log('Role creation cancelled.')
+    .onOk(() => {
+      console.log('Creating new user')
+    }).onCancel(() => {
+    console.log('user creation cancelled.')
   })
 }
 
-const confirm = (roleId) =>{
-
+const confirmDelete = (userId) => {
   $q.dialog({
     title: 'Confirm Deletion',
     message: 'Are you sure you want to delete this?',
     cancel: true,
     persistent: true,
-  }).onOk(async () =>{
-    await roleStore.deleteRole(roleId)
-    await roleStore.getRoles()
+  }).onOk(async () => {
+    await userStore.deleteUser(userId)
+    await userStore.getUsers()
   })
 }
 
-const edit = (role)=>{
-  roleStore.currentRole = role
+const edit = (user) => {
+  userStore.currentUser = user
   $q.dialog({
-    component: EditRole,
+    component: EditUser,
     componentProps: {
       title: 'Confirm Edit?',
       message: 'Are you sure you want to edit this?',
@@ -93,7 +97,8 @@ const edit = (role)=>{
     })
 
 }
-onMounted(async ()=>{
-  await roleStore.getRoles()
+onMounted(async () => {
+  await userStore.getUsers()
+  console.log(userStore.users)
 })
 </script>

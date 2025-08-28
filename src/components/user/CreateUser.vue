@@ -3,9 +3,9 @@
     <q-card class="q-dialog-plugin">
 
       <q-form class="q-gutter-md">
-        <q-input v-model="role" label="role" lazy-rules/>
-
-        <!--    <q-input v-model="password" filled type="password" hint="Password" />-->
+        <q-input v-model="name" label="Name" lazy-rules/>
+        <q-input v-model="email" type="email" label="Email" lazy-rules/>
+        <q-input v-model="password" type="password" label="Password" lazy-rules/>
         <div class="q-pa-lg">
           <q-option-group
             v-model="group"
@@ -29,31 +29,31 @@
 import {useDialogPluginComponent} from "quasar";
 import {computed, onMounted, ref} from 'vue'
 import {useRoleStore} from "stores/roleStore.js";
-import {usePermissionStore} from "stores/permissionStore.js";
+import {useUserStore} from "stores/userStore.js";
+// import router from 'src/router'
+// import {useAuthStore} from "stores/auth.js";
 
 defineEmits([...useDialogPluginComponent.emits])
 const {dialogRef, onDialogHide, onDialogOK, onDialogCancel} = useDialogPluginComponent()
 
 const roleStore = useRoleStore()
-const permissionStore = usePermissionStore()
-const selectedPermissions = ref([])
-
-const role = ref(roleStore.currentRole.name)
-const group = ref(selectedPermissions)
+const userStore = useUserStore()
+const name = ref('')
+const email = ref('')
+const password = ref('')
 const options = computed(() => {
-  return permissionStore.permissions.map(permission => ({label: permission.name, value: permission.id}))
+  return roleStore.roles.map(role => ({label: role.name, value: role.id}))
 })
+const group = ref([])
+
+
 const onOKClick = async () => {
   onDialogOK()
-  await roleStore.editRole({name: role.value, permission: group.value})
+  await userStore.createUser({name: name.value,email:email.value,password:password.value, role: group.value})
 }
 onMounted(async () => {
-  await permissionStore.getPermissions()
-  await roleStore.getRolePermissions()
+  await roleStore.getRoles()
 
-  if (roleStore.permissionsOfCurrentRole) {
-    selectedPermissions.value = roleStore.permissionsOfCurrentRole.map(permission => permission.id)
-  }
 })
 </script>
 

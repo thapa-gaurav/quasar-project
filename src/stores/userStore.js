@@ -1,14 +1,16 @@
 import {defineStore} from "pinia";
 import axiosInstance from "src/utils/axiosInstance.js";
 
-export const useRoleStore = defineStore('role', {
+export const useUserStore = defineStore('user', {
   state: () => ({
-    roles: [], currentRole: null, permissionsOfCurrentRole: null,
+    users: [],
+    currentUser: null,
+    rolesOfCurrentUser: null,
   }), getters: {}, actions: {
-    async createRoles(role) {
-      console.log(role)
+    async createUser(user) {
+      console.log(user)
       try {
-        const res = axiosInstance.post('/role/create', role, {
+        const res = axiosInstance.post('/user/register', user, {
           headers: {
             'Content-Type': 'multipart/form-data',
             Accept: 'application/json',
@@ -16,35 +18,19 @@ export const useRoleStore = defineStore('role', {
           }
         })
         if (!((await res).statusText === 'OK')) {
-          console.log('Unable to create role.');
+          console.log('Unable to register user.');
         } else {
           // const data = await  res.data
-          await this.getRoles()
+          await this.getUsers()
         }
 
       } catch (error) {
         console.log(error)
       }
-    }, async getRoles() {
+    },
+    async getUsers() {
       try {
-        const res = await axiosInstance.get('role/index', {
-          headers: {
-            'Content-Type': 'application/json',
-            Accept: 'application/json',
-            Authorization: 'Bearer ' + localStorage.getItem('userToken'),
-          },
-        })
-        if (!((await res).statusText === 'OK')) {
-          console.log('Unable to get roles')
-        } else {
-          this.roles = await res.data
-        }
-      } catch (error) {
-        console.log(error)
-      }
-    }, async deleteRole(roleId) {
-      try {
-        const res = await axiosInstance.delete('/role/delete/' + roleId, {
+        const res = await axiosInstance.get('user/index', {
           headers: {
             'Content-Type': 'application/json',
             Accept: 'application/json',
@@ -52,7 +38,25 @@ export const useRoleStore = defineStore('role', {
           },
         })
         if (!(res.statusText === 'OK')) {
-          console.log('Unable to delete role.')
+          console.log('Unable to get users')
+        } else {
+          this.users = await res.data.user
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    async deleteUser(userId) {
+      try {
+        const res = await axiosInstance.delete('/user/delete/' + userId, {
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+            Authorization: 'Bearer ' + localStorage.getItem('userToken'),
+          },
+        })
+        if (!(res.statusText === 'OK')) {
+          console.log('Unable to delete user.')
         } else {
           const data = await res.data
           console.log(data.message)
@@ -60,10 +64,10 @@ export const useRoleStore = defineStore('role', {
       } catch (error) {
         console.log(error)
       }
-    }, async editRole(role) {
-      console.log(role)
+    },
+    async editUserRole(role) {
       try {
-        const res = await axiosInstance.patch('role/edit/' + this.currentRole.id, role, {
+        const res = await axiosInstance.patch('user/role/edit/' + this.currentUser.id, role, {
           headers: {
             'Content-Type': 'application/json',
             Accept: 'application/json',
@@ -71,18 +75,18 @@ export const useRoleStore = defineStore('role', {
           },
         },)
         if (!(res.statusText === 'OK')) {
-          console.log('Unable to edit role.')
+          console.log('Unable to edit user\'s role.')
         } else {
           const data = await res.data
           console.log(data)
-          await this.getRoles()
+          await this.getUsers()
         }
       } catch (error) {
         console.log(error)
       }
-    }, async getRolePermissions() {
+    }, async getUserRoles() {
       try {
-        const res = await axiosInstance.get('role/permission/' + this.currentRole.id, {
+        const res = await axiosInstance.get('/user/role/get/' + this.currentUser.id, {
           headers: {
             'Content-Type': 'application/json',
             Accept: 'application/json',
@@ -90,11 +94,10 @@ export const useRoleStore = defineStore('role', {
           },
         })
         if (!(res.statusText === 'OK')) {
-          console.log('Unable to get permissions.')
+          console.log('Unable to get roles.')
         } else {
           const data = await res
-          this.permissionsOfCurrentRole = data.data.permissions
-          console.log(this.permissionsOfCurrentRole)
+          this.rolesOfCurrentUser = data.data.roles
         }
       } catch (error) {
         console.log(error)

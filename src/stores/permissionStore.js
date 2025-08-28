@@ -38,13 +38,10 @@ export const usePermissionStore = defineStore('permission', {
             Authorization: 'Bearer ' + localStorage.getItem('userToken'),
           },
         })
-        if (!((await res).statusText) === 'OK') {
+        if (!( res.statusText === 'OK')) {
           console.log('Unable to get permissions')
         } else {
           this.permissions = await res.data
-          console.log(this.permissions)
-          console.log('Success')
-
         }
       } catch (error) {
         console.log(error)

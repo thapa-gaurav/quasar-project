@@ -1,11 +1,8 @@
 <template>
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card class="q-dialog-plugin">
-
       <q-form class="q-gutter-md">
-        <q-input v-model="role" label="role" lazy-rules/>
-
-        <!--    <q-input v-model="password" filled type="password" hint="Password" />-->
+        <div class="text-h6">{{ userStore.currentUser.name }}</div>
         <div class="q-pa-lg">
           <q-option-group
             v-model="group"
@@ -16,11 +13,10 @@
         </div>
         <div>
           <q-btn label="Submit" type="submit" @click="onOKClick" color="primary"/>
-          <q-btn color="primary" label="Cancel" @click="onDialogCancel"/>
+          <q-btn label="Cancel" color="primary" @click="onDialogCancel"/>
         </div>
       </q-form>
     </q-card>
-
   </q-dialog>
 </template>
 
@@ -29,30 +25,30 @@
 import {useDialogPluginComponent} from "quasar";
 import {computed, onMounted, ref} from 'vue'
 import {useRoleStore} from "stores/roleStore.js";
-import {usePermissionStore} from "stores/permissionStore.js";
+import {useUserStore} from "stores/userStore.js";
 
 defineEmits([...useDialogPluginComponent.emits])
 const {dialogRef, onDialogHide, onDialogOK, onDialogCancel} = useDialogPluginComponent()
 
 const roleStore = useRoleStore()
-const permissionStore = usePermissionStore()
-const selectedPermissions = ref([])
+const userStore = useUserStore()
+const selectedRoles = ref([])
 
-const role = ref(roleStore.currentRole.name)
-const group = ref(selectedPermissions)
+// const role = ref(roleStore.currentRole.name)
+const group = ref(selectedRoles)
 const options = computed(() => {
-  return permissionStore.permissions.map(permission => ({label: permission.name, value: permission.id}))
+  return roleStore.roles.map(role => ({label: role.name, value: role.id}))
 })
 const onOKClick = async () => {
   onDialogOK()
-  await roleStore.editRole({name: role.value, permission: group.value})
+  await userStore.editUserRole({role: group.value})
 }
 onMounted(async () => {
-  await permissionStore.getPermissions()
-  await roleStore.getRolePermissions()
+  await roleStore.getRoles()
+  await userStore.getUserRoles()
 
-  if (roleStore.permissionsOfCurrentRole) {
-    selectedPermissions.value = roleStore.permissionsOfCurrentRole.map(permission => permission.id)
+  if (userStore.rolesOfCurrentUser) {
+    selectedRoles.value = userStore.rolesOfCurrentUser?.map(role => role.id)
   }
 })
 </script>
