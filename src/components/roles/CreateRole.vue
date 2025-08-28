@@ -27,7 +27,7 @@
 
 <script setup>
 import {useDialogPluginComponent} from "quasar";
-import {onMounted, ref} from 'vue'
+import {computed, onMounted, ref} from 'vue'
 import {useRoleStore} from "stores/roleStore.js";
 import {usePermissionStore} from "stores/permissionStore.js";
 // import router from 'src/router'
@@ -38,15 +38,12 @@ const {dialogRef, onDialogHide, onDialogOK, onDialogCancel} = useDialogPluginCom
 
 const roleStore = useRoleStore()
 const permissionStore = usePermissionStore()
-const currentPermissions = permissionStore.permissions
 const role = ref('')
 
-const options  = []
 const group = ref([])
-for (const currentPermission of currentPermissions) {
-  options.push({label: currentPermission.name, value: currentPermission.id})
-}
-
+const options = computed(() => {
+  return permissionStore.permissions.map(role => ({label: role.name, value: role.id}))
+})
 const onOKClick = async () => {
   onDialogOK()
   await roleStore.createRoles({name: role.value,permission:group.value})
