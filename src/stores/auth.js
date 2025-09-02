@@ -1,9 +1,12 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
 import axiosInstance from 'src/utils/axiosInstance.js'
+import {useUserStore} from "stores/userStore.js";
 
 export const useAuthStore = defineStore('auths', {
   state: () => ({
-    loginToken: null
+    loginToken: null,
+    isLoggedIn: false,
+
   }),
   getters: {},
   actions: {
@@ -21,6 +24,9 @@ export const useAuthStore = defineStore('auths', {
           const data = await res.data
           localStorage.setItem('userToken', data.token)
           this.loginToken = localStorage.getItem('userToken')
+          this.isLoggedIn = true
+          useUserStore().loggedUser = data.user
+          console.log(data)
           this.router.push('/dashboard')
         }
       } catch (error) {
@@ -44,15 +50,18 @@ export const useAuthStore = defineStore('auths', {
           console.log('unable to logout')
         } else {
           localStorage.removeItem('userToken')
+          this.isLoggedIn = false
+          useUserStore().loggedUser = null
           this.router.push('/login')
         }
       } catch (error) {
         console.log(error)
       }
     },
+
     async checkAuth() {
       try {
-        return !!localStorage.getItem('userToken')
+        this.isLoggedIn = !!localStorage.getItem('userToken')
       } catch (error) {
         console.log(error)
       }

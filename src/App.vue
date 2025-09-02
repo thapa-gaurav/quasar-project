@@ -4,13 +4,11 @@
       <q-toolbar>
         <q-toolbar-title>
           <q-avatar>
-            <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg" />
+            <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg"  alt=""/>
           </q-avatar>
           Title
         </q-toolbar-title>
-        <q-tabs align="right" shrink>
-          <q-route-tab name="tab1" label="Tab 1" />
-        </q-tabs>
+        <ProfileLogout v-if="authStore.isLoggedIn"/>
       </q-toolbar>
       <q-tabs align="left">
         <q-route-tab to="/dashboard" name="dashboard" label="List" />
@@ -26,5 +24,24 @@
   </q-layout>
 </template>
 <script setup>
-//
+
+import ProfileLogout from "components/ProfileLogout.vue";
+import {onBeforeMount} from "vue";
+import {useUserStore} from "stores/userStore.js";
+import {useAuthStore} from "stores/auth.js";
+// import {useRouter} from "vue-router";
+const userStore = useUserStore()
+const authStore = useAuthStore()
+
+// const router = useRouter()
+
+onBeforeMount(async ()=>{
+  await  authStore.checkAuth()
+  console.log('here1')
+  if(authStore.isLoggedIn){
+    console.log('here2')
+    await  userStore.getCurrentUser()
+    console.log(userStore.loggedUser)
+  }
+})
 </script>

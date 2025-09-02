@@ -5,8 +5,14 @@ import EditPost from 'src/components/EditPost.vue'
 import IndexPermission from "components/permissions/IndexPermission.vue"
 import IndexRole from "components/roles/IndexRole.vue"
 import IndexUser from "components/user/IndexUser.vue"
+import PasswordChange from "components/PasswordChange.vue";
+import App from "src/App.vue";
 
 const routes = [
+  {
+    path: '/',
+    component: App,
+  },
   {
     path: '/login',
     component: LoginForm,
@@ -34,6 +40,10 @@ const routes = [
   {
     path: '/user',
     component: IndexUser
+  },
+  {
+    path: '/passchange',
+    component: PasswordChange
   }
 ]
 

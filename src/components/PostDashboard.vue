@@ -1,7 +1,6 @@
 <template>
   <div class="q-pa-md">
     <div class="row justify-between">
-      <LogoutForm />
       <q-btn color="secondary" label="create" size="sm" @click="create" />
     </div>
     <q-table :columns="columns" :rows="postStore.posts" row-key="id" title="posts">
@@ -29,7 +28,6 @@
 
 <script setup>
 import { usePostStore } from 'src/stores/post'
-import LogoutForm from './LogoutForm.vue'
 import { onMounted } from 'vue'
 import { useQuasar } from 'quasar'
 import EditPost from './EditPost.vue'
