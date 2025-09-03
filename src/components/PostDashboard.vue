@@ -1,7 +1,7 @@
 <template>
   <div class="q-pa-md">
     <div class="row justify-between">
-      <q-btn color="secondary" label="create" size="sm" @click="create" />
+      <q-btn color="secondary" label="create" size="sm" @click="create" v-if="hasRoles(['admin']) || hasPermissions(['create_post'])"/>
     </div>
     <q-table :columns="columns" :rows="postStore.posts" row-key="id" title="posts">
 <!--      <template v-slot:body-cell-delete="props">-->
@@ -16,9 +16,9 @@
 <!--      </template>-->
       <template v-slot:body-cell-functions="props">
         <q-td :props="props">
-          <q-btn color="accent" label="delete" outline size="sms" @click="confirm(props.row.id)" />
-          <q-btn color="accent" label="edit" outline size="sms" @click="edit(props.row)" />
-          <q-btn color="accent" label="show" outline size="sms" @click="show(props.row.id)"/>
+          <q-btn v-if="hasRoles(['admin']) || hasPermissions(['delete_post'])"  color="accent" label="delete"  outline size="sms" @click="confirm(props.row.id)" />
+          <q-btn v-if="hasRoles(['admin']) || hasPermissions(['edit_post'])" color="accent" label="edit" outline size="sms" @click="edit(props.row)" />
+          <q-btn v-if="hasRoles(['admin']) || hasPermissions(['read_post'])" color="accent" label="show" outline size="sms" @click="show(props.row.id)"/>
         </q-td>
       </template>
     </q-table>
@@ -33,6 +33,7 @@ import { useQuasar } from 'quasar'
 import EditPost from './EditPost.vue'
 import CreatePost from './CreatePost.vue'
 import ShowPost from "components/ShowPost.vue";
+import {hasPermissions, hasRoles} from "src/utils/roleAndPermissionHelper.js";
 
 const $q = useQuasar()
 const postStore = usePostStore()
@@ -119,10 +120,6 @@ const show = async (post)=>{
   })
 }
 
-// const deletePost = async (postId) => {
-//   postStore.deletePost(postId)
-//   await postStore.getPosts()
-// }
 
 onMounted(async () => {
   await postStore.getPosts()

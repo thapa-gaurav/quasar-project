@@ -12,7 +12,7 @@
         <q-input label="image" filled type="file" v-model="imageFile" @change="onFileChange" outlined/>
         <q-card-actions>
           <q-btn label="Submit" type="submit" @click="onOKClick" color="primary"/>
-          <q-btn color="primary" label="Cancel" @click="onDialogCancel"/>
+          <q-btn v-if="hasRoles(['admin','junior'])" color="primary" label="Cancel" @click="onDialogCancel"/>
         </q-card-actions>
       </q-form>
     </q-card>
@@ -22,7 +22,7 @@
 
 <script setup>
 import {useDialogPluginComponent} from 'quasar'
-
+import {hasRoles} from "src/utils/roleAndPermissionHelper.js";
 import {usePostStore} from 'src/stores/post'
 import {ref} from 'vue'
 

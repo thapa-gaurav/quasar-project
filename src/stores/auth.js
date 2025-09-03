@@ -21,12 +21,13 @@ export const useAuthStore = defineStore('auths', {
         if (!(res.statusText === 'OK')) {
           console.log('Unable to login.')
         } else {
+          console.log("Logging user ")
           const data = await res.data
           localStorage.setItem('userToken', data.token)
-          this.loginToken = localStorage.getItem('userToken')
+          // this.loginToken = localStorage.getItem('userToken')
           this.isLoggedIn = true
-          useUserStore().loggedUser = data.user
-          console.log(data)
+          const userStore = useUserStore()
+          await userStore.getCurrentUser()
           this.router.push('/dashboard')
         }
       } catch (error) {

@@ -36,12 +36,11 @@ const userRoles = ref([])
 //  await authStore.handleLogout()
 // }
 
-onBeforeMount(async () => {
+onBeforeMount( async () => {
   await userStore.getCurrentUser()
-  userName.value = userStore.loggedUser.name
-  await userStore.getLoggedUserRoles()
+  userName.value = userStore.loggedUser.data.name
+  // await userStore.getLoggedUserRoles()
   userRoles.value = userStore.rolesOfLoggedUser
-  console.log(userRoles.value)
 })
 </script>
 

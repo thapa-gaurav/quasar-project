@@ -7,6 +7,7 @@ export const useUserStore = defineStore('user', {
     currentUser: null,
     loggedUser: null,
     rolesOfLoggedUser: null,
+    permissionsOfLoggedUser:null,
     rolesOfCurrentUser: null,
   }), getters: {}, actions: {
     async createUser(user) {
@@ -86,7 +87,7 @@ export const useUserStore = defineStore('user', {
       } catch (error) {
         console.log(error)
       }
-    },async getLoggedUserRoles() {
+    }, async getLoggedUserRoles() {
       try {
         const res = await axiosInstance.get('/user/role/get/' + this.loggedUser.id, {
           headers: {
@@ -98,8 +99,7 @@ export const useUserStore = defineStore('user', {
         if (!(res.statusText === 'OK')) {
           console.log('Unable to get roles.')
         } else {
-          const data = await res
-          this.rolesOfLoggedUser = data.data.roles
+          // const data = await res
         }
       } catch (error) {
         console.log(error)
@@ -124,11 +124,11 @@ export const useUserStore = defineStore('user', {
         console.log(error)
       }
     },
-    async changePassword(data){
+    async changePassword(data) {
       console.log(data)
-      try{
-        const res = await axiosInstance.patch('/user/changepassword/'+this.loggedUser.id,data,{
-          headers:{
+      try {
+        const res = await axiosInstance.patch('/user/changepassword/' + this.loggedUser.id, data, {
+          headers: {
             Accept: 'application/json',
             'Content-type': 'application/json',
             Authorization: 'Bearer ' + localStorage.getItem('userToken'),
@@ -137,7 +137,7 @@ export const useUserStore = defineStore('user', {
         if (!(res.statusText === 'OK')) {
           console.log('Unable to change password')
         } else {
-          const data = await  res.data
+          const data = await res.data
           console.log(data.message)
           localStorage.removeItem('userToken')
           this.isLoggedIn = false
@@ -145,7 +145,7 @@ export const useUserStore = defineStore('user', {
           this.router.push('/login')
           console.log('Password changed successfully.')
         }
-      }catch (error){
+      } catch (error) {
         console.log(error.message)
       }
     },
@@ -153,16 +153,17 @@ export const useUserStore = defineStore('user', {
       try {
         const res = await axiosInstance.get('/user/get/current', {
           headers: {
-            'Content-Type': 'application/json',
             Accept: 'application/json',
             Authorization: 'Bearer ' + localStorage.getItem('userToken'),
           },
         })
-        if (!(res.statusText === 'OK')) {
+        if (res.status !== 200) {
           console.log('Unable to get current user')
         } else {
-          this.loggedUser = await res.data
-          console.log(this.loggedUser)
+          this.loggedUser = res.data
+          console.log(res.data)
+          this.rolesOfLoggedUser = res.data.data.role
+          this.permissionsOfLoggedUser = res.data.data.permission
         }
       } catch (error) {
         console.log(error)

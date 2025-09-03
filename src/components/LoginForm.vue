@@ -13,21 +13,15 @@
 <script setup>
 import { ref } from 'vue'
 import { useAuthStore } from 'src/stores/auth'
-import {useRouter} from "vue-router"
-
-const router = useRouter()
 const authStore = useAuthStore()
 const email = ref('')
 const password = ref('')
 
-const login = () => {
+const login = async () => {
   const credentials = {
     email: email.value,
     password: password.value,
   }
-  authStore.handleLogin(credentials)
-  if (authStore.loginToken) {
-    router.push('/dashboard')
-  }
+  await authStore.handleLogin(credentials)
 }
 </script>

@@ -10,11 +10,11 @@
         </q-toolbar-title>
         <ProfileLogout v-if="authStore.isLoggedIn"/>
       </q-toolbar>
-      <q-tabs align="left">
+      <q-tabs align="left" v-if="!!useUserStore().loggedUser">
         <q-route-tab to="/dashboard" name="dashboard" label="List" />
-        <q-route-tab to="/permission" name="permission" label="Permission" />
-        <q-route-tab to="/role" name="role" label="Roles" />
-        <q-route-tab to="/user" name="user" label="Users"/>
+        <q-route-tab v-if="hasRoles(['admin'])" to="/permission" name="permission" label="Permission" />
+        <q-route-tab v-if="hasRoles(['admin'])" to="/role" name="role" label="Roles" />
+        <q-route-tab v-if="hasRoles(['admin'])" to="/user" name="user" label="Users"/>
       </q-tabs>
     </q-header>
 
@@ -29,6 +29,7 @@ import ProfileLogout from "components/ProfileLogout.vue";
 import {onBeforeMount} from "vue";
 import {useUserStore} from "stores/userStore.js";
 import {useAuthStore} from "stores/auth.js";
+import {hasRoles} from "src/utils/roleAndPermissionHelper.js";
 // import {useRouter} from "vue-router";
 const userStore = useUserStore()
 const authStore = useAuthStore()
@@ -37,11 +38,8 @@ const authStore = useAuthStore()
 
 onBeforeMount(async ()=>{
   await  authStore.checkAuth()
-  console.log('here1')
   if(authStore.isLoggedIn){
-    console.log('here2')
     await  userStore.getCurrentUser()
-    console.log(userStore.loggedUser)
   }
 })
 </script>
