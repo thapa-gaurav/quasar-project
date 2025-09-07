@@ -13,20 +13,18 @@ export const usePostStore = defineStore('posts', {
       try {
         const res = await axiosInstance.get('posts/index', {
           headers: {
-            'Content-Type': 'application/json',
-            Accept: 'application/json',
             Authorization: 'Bearer ' + localStorage.getItem('userToken'),
           },
         })
-
         const data = await res.data
         this.posts = data.data
         console.log(this.posts)
         if (!(res.statusText === 'OK')) {
           console.log('Unable to fetch data.')
         }
+
       } catch (error) {
-        console.log(error)
+        console.log("Request failed: " + error)
       }
     },
     async createPost(formData) {
@@ -34,8 +32,6 @@ export const usePostStore = defineStore('posts', {
       try {
         const res = await axiosInstance.post('posts/store', formData, {
           headers: {
-            'Content-Type': 'multipart/form-data',
-            Accept: 'application/json',
             Authorization: 'Bearer ' + localStorage.getItem('userToken'),
           },
         })
@@ -59,8 +55,6 @@ export const usePostStore = defineStore('posts', {
       try {
         const res = await axiosInstance.delete('/post/delete/' + postId, {
           headers: {
-            'Content-Type': 'application/json',
-            Accept: 'application/json',
             Authorization: 'Bearer ' + localStorage.getItem('userToken'),
           },
         })
@@ -83,8 +77,6 @@ export const usePostStore = defineStore('posts', {
           this.currentPost,
           {
             headers: {
-              'Content-Type': 'application/json',
-              Accept: 'application/json',
               Authorization: 'Bearer ' + localStorage.getItem('userToken'),
             },
           },
@@ -105,8 +97,6 @@ export const usePostStore = defineStore('posts', {
       try{
         const res = await axiosInstance.get(`/posts/show/${post}`,{
           headers: {
-            'Content-Type': 'application/json',
-            Accept: 'application/json',
             Authorization: 'Bearer ' + localStorage.getItem('userToken'),
           },
         })

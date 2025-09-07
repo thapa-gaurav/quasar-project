@@ -1,4 +1,4 @@
-import { acceptHMRUpdate, defineStore } from 'pinia'
+import {acceptHMRUpdate, defineStore} from 'pinia'
 import axiosInstance from 'src/utils/axiosInstance.js'
 import {useUserStore} from "stores/userStore.js";
 
@@ -13,10 +13,6 @@ export const useAuthStore = defineStore('auths', {
     async handleLogin(credentials) {
       try {
         const res = await axiosInstance.post('/login', credentials, {
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
         })
         if (!(res.statusText === 'OK')) {
           console.log('Unable to login.')
@@ -41,8 +37,6 @@ export const useAuthStore = defineStore('auths', {
           {},
           {
             headers: {
-              Accept: 'application/json',
-              'Content-type': 'application/json',
               Authorization: 'Bearer ' + localStorage.getItem('userToken'),
             },
           },

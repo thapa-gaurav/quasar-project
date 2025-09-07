@@ -1,5 +1,5 @@
 <template>
-  <q-form @submit="login()" class=" max-w-96">
+  <q-form @submit="login()" class="max-w-96">
     <q-input v-model="email" filled class="m-4" label="Email"  />
 
     <q-input v-model="password" filled class="m-4" type="password" label="password"/>
@@ -11,11 +11,13 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import {onMounted, ref} from 'vue'
 import { useAuthStore } from 'src/stores/auth'
+import {useRouter} from "vue-router";
 const authStore = useAuthStore()
 const email = ref('')
 const password = ref('')
+const router = useRouter()
 
 const login = async () => {
   const credentials = {
@@ -24,4 +26,10 @@ const login = async () => {
   }
   await authStore.handleLogin(credentials)
 }
+
+onMounted(()=>{
+  if(localStorage.getItem('userToken')){
+    router.push('/dashboard')
+  }
+})
 </script>
