@@ -1,4 +1,6 @@
 import axios from 'axios'
+import {Notify} from "quasar";
+// import { Notify} from "quasar";
 
 import.meta.env.BASE_URL
 
@@ -13,17 +15,16 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.response.use(
   (response) => {
-    return response;
+    return response
   },
   (error) => {
     if (error.response && error.response.status === 401) {
-      console.log('Unauthorized - redirecting to login...')
-      localStorage.removeItem('userToken')
       window.location.href = 'http://localhost:9002/#/login'
-      window.location.reload()
-      alert('Unauthenticated access.')
-    }
+      localStorage.removeItem('userToken')
+      Notify.create({
+        type:'negative',
+        message:'Unauthorized - redirected to login...'
+      })}
     return Promise.reject(error)
-  }
-)
-export default axiosInstance;
+  })
+export default axiosInstance

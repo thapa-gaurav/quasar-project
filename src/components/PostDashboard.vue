@@ -51,6 +51,7 @@
     </q-table>
   </div>
   <!-- @click="deletePost(props.row.id)" -->
+  <!-- Hello ther-->
 </template>
 
 <script setup>

@@ -1,5 +1,5 @@
 <template>
-  <div class="flex items-center gap-2 bg-sky-200 shadow-md w-full max-w-md">
+  <div class="flex items-center gap-2 col  bg-sky-200 shadow-md w-full max-w-md">
     <RouterLink to="/passchange">
       <img alt="Profile Picture" class="mx-auto block h-24 rounded-full" src="../assets/user.png" />
     </RouterLink>

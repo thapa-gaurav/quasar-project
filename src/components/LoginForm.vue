@@ -17,12 +17,13 @@
 import { onMounted, ref } from 'vue'
 import { useAuthStore } from 'src/stores/auth'
 import { useRouter } from 'vue-router'
+import {useQuasar} from "quasar";
 
 const authStore = useAuthStore()
 const email = ref('')
 const password = ref('')
 const router = useRouter()
-
+const $q  = useQuasar()
 const login = async () => {
   const credentials = {
     email: email.value,
@@ -33,8 +34,11 @@ const login = async () => {
 
 onMounted(() => {
   if (localStorage.getItem('userToken')) {
-    alert('You are already logged in.')
     router.push('/dashboard')
+    $q.notify({
+      type: 'positive',
+      message: 'You are already logged in.'
+    })
   }
 })
 </script>
