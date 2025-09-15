@@ -1,24 +1,51 @@
 <template>
   <div class="q-pa-md">
     <div class="row justify-between">
-      <q-btn color="secondary" label="create" size="sm" @click="create" v-if="hasRoles(['admin']) || hasPermissions(['create_post'])"/>
+      <q-btn
+        v-if="hasRoles(['admin']) || hasPermissions(['create_post'])"
+        color="secondary"
+        label="create"
+        size="sm"
+        @click="create"
+      />
     </div>
     <q-table :columns="columns" :rows="postStore.posts" row-key="id" title="posts">
-<!--      <template v-slot:body-cell-delete="props">-->
-<!--        <q-td :props="props">-->
-<!--          <q-btn color="primary" label="delete" outline size="sm" @click="confirm(props.row.id)" />-->
-<!--        </q-td>-->
-<!--      </template>-->
-<!--      <template v-slot:body-cell-edit="props">-->
-<!--        <q-td :props="props">-->
-<!--          <q-btn color="accent" label="edit" outline size="sms" @click="edit(props.row)" />-->
-<!--        </q-td>-->
-<!--      </template>-->
+      <!--      <template v-slot:body-cell-delete="props">-->
+      <!--        <q-td :props="props">-->
+      <!--          <q-btn color="primary" label="delete" outline size="sm" @click="confirm(props.row.id)" />-->
+      <!--        </q-td>-->
+      <!--      </template>-->
+      <!--      <template v-slot:body-cell-edit="props">-->
+      <!--        <q-td :props="props">-->
+      <!--          <q-btn color="accent" label="edit" outline size="sms" @click="edit(props.row)" />-->
+      <!--        </q-td>-->
+      <!--      </template>-->
       <template v-slot:body-cell-functions="props">
         <q-td :props="props">
-          <q-btn v-if="hasRoles(['admin']) || hasPermissions(['delete_post'])"  color="accent" label="delete"  outline size="sms" @click="confirm(props.row.id)" />
-          <q-btn v-if="hasRoles(['admin']) || hasPermissions(['edit_post'])" color="accent" label="edit" outline size="sms" @click="edit(props.row)" />
-          <q-btn v-if="hasRoles(['admin']) || hasPermissions(['read_post'])" color="accent" label="show" outline size="sms" @click="show(props.row.id)"/>
+          <q-btn
+            v-if="hasRoles(['admin']) || hasPermissions(['delete_post'])"
+            outline
+            size="sms"
+            @click="confirm(props.row.id)"
+          >
+            <q-icon name="delete" />
+          </q-btn>
+          <q-btn
+            v-if="hasRoles(['admin']) || hasPermissions(['edit_post'])"
+            outline
+            size="sms"
+            @click="edit(props.row)"
+          >
+            <q-icon name="edit" />
+          </q-btn>
+          <q-btn
+            v-if="hasRoles(['admin']) || hasPermissions(['read_post'])"
+            outline
+            size="sms"
+            @click="show(props.row.id)"
+          >
+            <q-icon name="visibility" />
+          </q-btn>
         </q-td>
       </template>
     </q-table>
@@ -32,8 +59,8 @@ import { onMounted } from 'vue'
 import { useQuasar } from 'quasar'
 import EditPost from './EditPost.vue'
 import CreatePost from './CreatePost.vue'
-import ShowPost from "components/ShowPost.vue";
-import {hasPermissions, hasRoles} from "src/utils/roleAndPermissionHelper.js";
+import ShowPost from 'components/ShowPost.vue'
+import { hasPermissions, hasRoles } from 'src/utils/roleAndPermissionHelper.js'
 
 const $q = useQuasar()
 const postStore = usePostStore()
@@ -55,8 +82,8 @@ const columns = [
     field: 'text',
   },
   {
-    name:'functions',
-    label:'functions',
+    name: 'functions',
+    label: 'functions',
   },
 ]
 
@@ -108,18 +135,19 @@ const create = () => {
     })
 }
 
-const show = async (post)=>{
-  await postStore.showPost(post);
+const show = async (post) => {
+  await postStore.showPost(post)
   $q.dialog({
-    component:ShowPost,
-    persistent:true,
-  }).onOk(()=>{
-    console.log("A post was shown.")
-  }).onCancel(()=>{
-    console.log('Show post cancelled');
+    component: ShowPost,
+    persistent: true,
   })
+    .onOk(() => {
+      console.log('A post was shown.')
+    })
+    .onCancel(() => {
+      console.log('Show post cancelled')
+    })
 }
-
 
 onMounted(async () => {
   await postStore.getPosts()

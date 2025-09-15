@@ -26,71 +26,76 @@
 
 <template>
   <q-layout view="hHh lpR fFf">
-
-    <q-header elevated class="bg-primary text-white">
+    <q-header class="bg-primary text-white" elevated>
       <q-toolbar>
-<!--        <q-btn dense flat round icon="menu" @click="toggleDrawer"/>-->
+        <!--        <q-btn dense flat round icon="menu" @click="toggleDrawer"/>-->
 
         <q-toolbar-title>
           <q-avatar>
-            <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg">
+            <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg" />
           </q-avatar>
           Blog App
         </q-toolbar-title>
-        <ProfileLogout v-if="authStore.isLoggedIn"/>
+        <ProfileLogout v-if="authStore.isLoggedIn" />
       </q-toolbar>
     </q-header>
 
-    <q-drawer show-if-above side="left" bordered
-              :mini="miniState"
-              @mouseenter="miniState = false"
-              @mouseleave="miniState = true"
-              mini-to-overlay
-
-              :width="200"
-              :breakpoint="500"
-              :class="$q.dark.isActive ? 'bg-grey-9' : 'bg-grey-3'"
-              v-if="authStore.isLoggedIn"
+    <q-drawer
+      v-if="authStore.isLoggedIn"
+      :breakpoint="500"
+      :class="$q.dark.isActive ? 'bg-grey-9' : 'bg-grey-3'"
+      :mini="miniState"
+      :width="200"
+      bordered
+      mini-to-overlay
+      show-if-above
+      side="left"
+      @mouseenter="miniState = false"
+      @mouseleave="miniState = true"
     >
-      <q-scroll-area class="fit" :horizontal-thumb-style="{ opacity: 0 }" >
+      <q-scroll-area :horizontal-thumb-style="{ opacity: 0 }" class="fit">
         <q-list padding>
-          <q-item clickable v-ripple>
+          <RouterLink label="List" name="dashboard" to="/dashboard">
+            <q-item v-ripple clickable>
+              <q-item-section avatar>
+                <q-icon name="dashboard" />
+              </q-item-section>
+
+              <q-item-section> Dashboard </q-item-section>
+            </q-item>
+          </RouterLink>
+          <RouterLink
+            v-if="hasRoles(['admin'])"
+            label="Permission"
+            name="permission"
+            to="/permission"
+          >
+            <q-item v-if="hasRoles(['admin'])" v-ripple clickable>
+              <q-item-section avatar>
+                <q-icon name="shield" />
+              </q-item-section>
+
+              <q-item-section> Permissions </q-item-section>
+            </q-item>
+          </RouterLink>
+          <RouterLink v-if="hasRoles(['admin'])" label="Roles" name="role" to="/role">
+            <q-item v-if="hasRoles(['admin'])" v-ripple clickable>
+              <q-item-section avatar>
+                <q-icon name="assignment_ind" />
+              </q-item-section>
+
+              <q-item-section> Role </q-item-section>
+            </q-item>
+          </RouterLink>
+          <q-item v-if="hasRoles(['admin'])" v-ripple clickable>
             <q-item-section avatar>
-              <q-icon name="dashboard"/>
+              <q-icon name="group" />
             </q-item-section>
 
             <q-item-section>
-              <RouterLink to="/dashboard" name="dashboard" label="List">Dashboard</RouterLink>
-            </q-item-section>
-          </q-item>
-
-          <q-item clickable v-ripple v-if="hasRoles(['admin'])">
-            <q-item-section avatar>
-              <q-icon name="shield"/>
-            </q-item-section>
-
-            <q-item-section>
-              <RouterLink v-if="hasRoles(['admin'])" to="/permission" name="permission" label="Permission" >Permissions</RouterLink>
-            </q-item-section>
-          </q-item>
-
-          <q-item clickable v-ripple v-if="hasRoles(['admin'])">
-            <q-item-section avatar>
-              <q-icon name="assignment_ind"/>
-            </q-item-section>
-
-            <q-item-section>
-              <RouterLink v-if="hasRoles(['admin'])" to="/role" name="role" label="Roles">Role</RouterLink>
-            </q-item-section>
-          </q-item>
-
-          <q-item clickable v-ripple v-if="hasRoles(['admin'])">
-            <q-item-section avatar>
-              <q-icon name="group"/>
-            </q-item-section>
-
-            <q-item-section>
-              <RouterLink v-if="hasRoles(['admin'])" to="/user" name="user" label="Users">User</RouterLink>
+              <RouterLink v-if="hasRoles(['admin'])" label="Users" name="user" to="/user"
+                >User</RouterLink
+              >
             </q-item-section>
           </q-item>
         </q-list>
@@ -98,18 +103,16 @@
     </q-drawer>
 
     <q-page-container>
-      <router-view/>
+      <router-view />
     </q-page-container>
-
   </q-layout>
 </template>
 <script setup>
-
-import ProfileLogout from "components/ProfileLogout.vue";
-import {onBeforeMount, ref} from "vue";
-import {useUserStore} from "stores/userStore.js";
-import {useAuthStore} from "stores/auth.js";
-import {hasRoles} from "src/utils/roleAndPermissionHelper.js";
+import ProfileLogout from 'components/ProfileLogout.vue'
+import { onBeforeMount, ref } from 'vue'
+import { useUserStore } from 'stores/userStore.js'
+import { useAuthStore } from 'stores/auth.js'
+import { hasRoles } from 'src/utils/roleAndPermissionHelper.js'
 // import {useRouter} from "vue-router";
 const userStore = useUserStore()
 const authStore = useAuthStore()

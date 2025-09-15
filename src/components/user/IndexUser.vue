@@ -2,7 +2,7 @@
   <div class="q-pa-md">
     <div class="row justify-between">
       <!--      <LogoutForm />-->
-      <q-btn color="secondary" label="create" size="sm" @click="create"/>
+      <q-btn color="secondary" label="create" size="sm" @click="create" />
     </div>
     <q-table :columns="columns" :rows="userStore.users" row-key="id" title="Users">
       <!--      <template v-slot:body-cell-functions="props">-->
@@ -14,43 +14,47 @@
       <!--      </template>-->
       <template v-slot:body-cell-actions="props">
         <q-td :props="props">
-          <q-btn color="accent" label="delete" outline size="sms" @click="confirmDelete(props.row.id)"/>
-          <q-btn color="accent" label="edit" outline size="sms" @click="edit(props.row)"/>
+          <q-btn outline size="sms" @click="confirmDelete(props.row.id)">
+            <q-icon name="delete" />
+          </q-btn>
+          <q-btn outline size="sms" @click="edit(props.row)">
+            <q-icon name="edit" />
+          </q-btn>
         </q-td>
       </template>
     </q-table>
-
   </div>
 </template>
 
 <script setup>
-import {onMounted} from "vue";
-import {useQuasar} from 'quasar'
-import {useUserStore} from "stores/userStore.js";
-import CreateUser from "components/user/CreateUser.vue";
-import EditUser from "components/user/EditUser.vue";
+import { onMounted } from 'vue'
+import { useQuasar } from 'quasar'
+import { useUserStore } from 'stores/userStore.js'
+import CreateUser from 'components/user/CreateUser.vue'
+import EditUser from 'components/user/EditUser.vue'
+
 const userStore = useUserStore()
 const columns = [
   {
     name: 'id',
     required: true,
     label: 'ID',
-    field: 'id'
+    field: 'id',
   },
   {
     name: 'name',
     label: 'Name',
-    field: 'name'
+    field: 'name',
   },
   {
     name: 'email',
     label: 'Email',
-    field: 'email'
+    field: 'email',
   },
   {
     name: 'actions',
-    label: 'actions'
-  }
+    label: 'actions',
+  },
 ]
 
 const $q = useQuasar()
@@ -62,9 +66,10 @@ const create = () => {
   })
     .onOk(() => {
       console.log('Creating new user')
-    }).onCancel(() => {
-    console.log('user creation cancelled.')
-  })
+    })
+    .onCancel(() => {
+      console.log('user creation cancelled.')
+    })
 }
 
 const confirmDelete = (userId) => {
@@ -95,7 +100,6 @@ const edit = (user) => {
     .onCancel(() => {
       console.log('canceled')
     })
-
 }
 onMounted(async () => {
   await userStore.getUsers()

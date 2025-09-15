@@ -1,52 +1,74 @@
 <template>
-  <q-form @submit="changePass()" class=" max-w-96">
-    <!--  <q-input v-model="current_password" type="password" label="current_password" lazy-rules />-->
-    <q-input v-model="current_password" class="m-4" filled :type="isPwd ? 'password' : 'text'" label="Current Password">
-      <template v-slot:append>
-        <q-icon
-          :name="isPwd ? 'visibility_off' : 'visibility'"
-          class="cursor-pointer"
-          @click="isPwd = !isPwd"
-        />
-      </template>
-    </q-input>
-    <!--  <q-input v-model="password" label="new_password" type="password" lazy-rules />-->
-    <q-input v-model="password" filled class="m-4" :type="isPwd ? 'password' : 'text'" label="New Password">
-      <template v-slot:append>
-        <q-icon
-          :name="isPwd ? 'visibility_off' : 'visibility'"
-          class="cursor-pointer"
-          @click="isPwd = !isPwd"
-        />
-      </template>
-    </q-input>
-    <!--  <q-input v-model="password_confirmation" label="password_confirmation" type="password" lazy-rules />-->
-    <q-input v-model="password_confirmation" filled class="m-4" :type="isPwd ? 'password' : 'text'" label="Confirm Password">
-      <template v-slot:append>
-        <q-icon
-          :name="isPwd ? 'visibility_off' : 'visibility'"
-          class="cursor-pointer"
-          @click="isPwd = !isPwd"
-        />
-      </template>
-    </q-input>
-    <div class="m-4">
-      <q-btn label="Submit" type="submit" color="primary"/>
-    </div>
-  </q-form>
+  <div class="flex flex-row justify-center content-center h-screen">
+    <q-form
+      class="h-96 w-96 flex flex-col gap-2 border-2 border-sky-400 justify-center p-2 rounded-md"
+      @submit="changePass()"
+    >
+      <!--  <q-input v-model="current_password" type="password" label="current_password" lazy-rules />-->
+      <q-input
+        v-model="current_password"
+        :type="isPwd ? 'password' : 'text'"
+        class="m-4"
+        filled
+        label="Current Password"
+      >
+        <template v-slot:append>
+          <q-icon
+            :name="isPwd ? 'visibility_off' : 'visibility'"
+            class="cursor-pointer"
+            @click="isPwd = !isPwd"
+          />
+        </template>
+      </q-input>
+      <!--  <q-input v-model="password" label="new_password" type="password" lazy-rules />-->
+      <q-input
+        v-model="password"
+        :type="isPwd ? 'password' : 'text'"
+        class="m-4"
+        filled
+        label="New Password"
+      >
+        <template v-slot:append>
+          <q-icon
+            :name="isPwd ? 'visibility_off' : 'visibility'"
+            class="cursor-pointer"
+            @click="isPwd = !isPwd"
+          />
+        </template>
+      </q-input>
+      <!--  <q-input v-model="password_confirmation" label="password_confirmation" type="password" lazy-rules />-->
+      <q-input
+        v-model="password_confirmation"
+        :type="isPwd ? 'password' : 'text'"
+        class="m-4"
+        filled
+        label="Confirm Password"
+      >
+        <template v-slot:append>
+          <q-icon
+            :name="isPwd ? 'visibility_off' : 'visibility'"
+            class="cursor-pointer"
+            @click="isPwd = !isPwd"
+          />
+        </template>
+      </q-input>
+      <div class="m-4">
+        <q-btn color="primary" label="Submit" type="submit" />
+      </div>
+    </q-form>
+  </div>
 </template>
 
 <script setup>
-import {ref} from 'vue'
-// import {useRouter} from "vue-router"
-import {useUserStore} from "stores/userStore.js";
+import { ref } from 'vue' // import {useRouter} from "vue-router"
+import { useUserStore } from 'stores/userStore.js' // const router = useRouter()
+import { useQuasar } from 'quasar' // const router = useRouter()
 
 // const router = useRouter()
 const userStore = useUserStore()
 const current_password = ref('')
 const password = ref('')
 const password_confirmation = ref('')
-import {useQuasar} from "quasar";
 
 const $q = useQuasar()
 const changePass = () => {
@@ -61,7 +83,6 @@ const changePass = () => {
         current_password: current_password.value,
         password: password.value,
         password_confirmation: password_confirmation.value,
-
       }
       await userStore.changePassword(data)
     })

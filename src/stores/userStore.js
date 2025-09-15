@@ -1,5 +1,6 @@
-import {defineStore} from "pinia";
-import axiosInstance from "src/utils/axiosInstance.js";
+import { defineStore } from 'pinia'
+import axiosInstance from 'src/utils/axiosInstance.js'
+import { useCommonStore } from 'stores/commonStore.js'
 
 export const useUserStore = defineStore('user', {
   state: () => ({
@@ -7,39 +8,28 @@ export const useUserStore = defineStore('user', {
     currentUser: null,
     loggedUser: null,
     rolesOfLoggedUser: null,
-    permissionsOfLoggedUser:null,
+    permissionsOfLoggedUser: null,
     rolesOfCurrentUser: null,
-  }), getters: {}, actions: {
+  }),
+  getters: {},
+  actions: {
     async createUser(user) {
       console.log(user)
       try {
-        const res = axiosInstance.post('/user/register', user, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-            Accept: 'application/json',
-            Authorization: 'Bearer ' + localStorage.getItem('userToken'),
-          }
-        })
+        const res = await useCommonStore().createItem('/user/register', user)
         if (!((await res).statusText === 'OK')) {
-          console.log('Unable to register user.');
+          console.log('Unable to register user.')
         } else {
           // const data = await  res.data
           await this.getUsers()
         }
-
       } catch (error) {
         console.log(error)
       }
     },
     async getUsers() {
       try {
-        const res = await axiosInstance.get('user/index', {
-          headers: {
-            'Content-Type': 'application/json',
-            Accept: 'application/json',
-            Authorization: 'Bearer ' + localStorage.getItem('userToken'),
-          },
-        })
+        const res = await useCommonStore().readItem('user/index')
         if (!(res.statusText === 'OK')) {
           console.log('Unable to get users')
         } else {
@@ -51,13 +41,7 @@ export const useUserStore = defineStore('user', {
     },
     async deleteUser(userId) {
       try {
-        const res = await axiosInstance.delete('/user/delete/' + userId, {
-          headers: {
-            'Content-Type': 'application/json',
-            Accept: 'application/json',
-            Authorization: 'Bearer ' + localStorage.getItem('userToken'),
-          },
-        })
+        const res = await useCommonStore().deleteItem(`/user/delete/${userId}`)
         if (!(res.statusText === 'OK')) {
           console.log('Unable to delete user.')
         } else {
@@ -70,15 +54,9 @@ export const useUserStore = defineStore('user', {
     },
     async editUserRole(role) {
       try {
-        const res = await axiosInstance.patch('user/role/edit/' + this.currentUser.id, role, {
-          headers: {
-            'Content-Type': 'application/json',
-            Accept: 'application/json',
-            Authorization: 'Bearer ' + localStorage.getItem('userToken'),
-          },
-        })
+        const res = await useCommonStore().editItem(`user/role/edit/${this.currentUser.id}`, role)
         if (!(res.statusText === 'OK')) {
-          console.log('Unable to edit user\'s role.')
+          console.log("Unable to edit user's role.")
         } else {
           const data = await res.data
           console.log(data)
@@ -87,7 +65,8 @@ export const useUserStore = defineStore('user', {
       } catch (error) {
         console.log(error)
       }
-    }, async getLoggedUserRoles() {
+    },
+    async getLoggedUserRoles() {
       try {
         const res = await axiosInstance.get('/user/role/get/' + this.loggedUser.id, {
           headers: {
@@ -132,7 +111,7 @@ export const useUserStore = defineStore('user', {
             Accept: 'application/json',
             'Content-type': 'application/json',
             Authorization: 'Bearer ' + localStorage.getItem('userToken'),
-          }
+          },
         })
         if (!(res.statusText === 'OK')) {
           console.log('Unable to change password')
