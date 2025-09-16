@@ -125,7 +125,6 @@ export const usePostStore = defineStore('posts', {
         if(!(res.statusText === 'OK')) {
           console.log('Unable to change image.')
         }else {
-          alert('Changed image successfully.')
           await this.showPost(this.currentPost.id)
         }
       }catch (error){

@@ -30,9 +30,9 @@
       <q-card-section class="q-pt-none">
         {{thisPost.text}}
         <q-btn label="Ok" @click="onOKClick" color="primary" />
-        <q-btn label="Replace" @click="replaceImg" color="secondary"/>
+        <q-btn :loading="loading" label="Replace" @click="replaceImg" color="secondary"/>
         <q-btn label="Detach" @click="detachImg" class="bg-negative"/>
-        <input type="file" ref="fileInput" @change="onFileSelected" style="display: none">
+        <q-file ref="fileInput" v-model="selectedFile"  @update:model-value="onFileSelected" style="display: none"/>
       </q-card-section>
     </q-card>
     </q-dialog>
@@ -41,30 +41,39 @@
 <script setup>
 import { useDialogPluginComponent } from 'quasar'
 import { usePostStore } from 'src/stores/post'
-import  {ref} from 'vue'
+import {ref} from 'vue'
 defineEmits([...useDialogPluginComponent.emits])
 const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent()
 
 const postStore = usePostStore()
 const thisPost = ref(postStore.currentPost)
 const postImage =  ref(postStore.currentPost.imageUrl)
+const selectedFile = ref(null)
 const fileInput = ref(null)
+const loading = ref(false)
 function onOKClick() {
   onDialogOK()
 }
 
 function  replaceImg(){
-  fileInput.value.click()
+  fileInput.value.$el.click()
 }
 
-async function  onFileSelected(event){
-  const file = event.target.files[0]
+async function  onFileSelected(file){
+  loading.value = true
+  try {
+    selectedFile.value = file
+    if(!selectedFile.value) return
+    const formData = new FormData()
+    formData.append('image',selectedFile.value)
+    await postStore.changeImage(formData)
+    postImage.value  = postStore.currentPost.imageUrl
+  }catch (error){
+    console.log(error.messages)
+  }finally {
+  loading.value = false
+  }
 
-  if(!file) return
-  const formData = new FormData()
-  formData.append('image',file)
-  await postStore.changeImage(formData)
-  postImage.value  = postStore.currentPost.imageUrl
 
 }
 async function detachImg(){
