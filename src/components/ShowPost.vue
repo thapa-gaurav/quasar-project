@@ -22,7 +22,7 @@
     <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card class="my-card">
 
-      <q-img :src="`${postImage}`" alt="alternate image">
+      <q-img :src="`${postImage}`" alt="alternate image" class="object-cover">
         <div class="absolute-bottom text-subtitle1 text-center">
           {{thisPost.caption}}
         </div>
