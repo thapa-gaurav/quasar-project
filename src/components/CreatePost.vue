@@ -5,19 +5,18 @@
         <div class="text-h6">Create Post?</div>
       </q-card-section>
       <q-form class="q-gutter-md">
-        <q-input label="caption" lazy-rules v-model="caption" outlined/>
+        <q-input label="caption" lazy-rules v-model="caption" outlined />
 
-        <q-input label="text" filled type="text" v-model="text" outlined/>
+        <q-input label="text" filled type="text" v-model="text" outlined />
 
-        <q-input label="image" filled type="file" v-model="imageFile" @change="onFileChange" outlined/>
+        <q-input label="image" filled type="file" v-model="imageFile" @change="onFileChange" outlined required/>
         <q-card-actions>
-          <q-btn label="Submit" type="submit" @click="onOKClick" color="primary"/>
+          <q-btn :loading="loading" label="Submit" type="submit" @click="onOKClick" color="primary"/>
           <q-btn v-if="hasRoles(['admin','junior'])" color="primary" label="Cancel" @click="onDialogCancel"/>
         </q-card-actions>
       </q-form>
     </q-card>
   </q-dialog>
-  <!-- {{ thisPost.text }} -->
 </template>
 
 <script setup>
@@ -34,14 +33,8 @@ const caption = ref('')
 const text = ref('')
 const imageFile = ref(null) // will hold FileList
 const selectedFile = ref(null) // actual File
+const loading = ref(false)
 
-const formData = new FormData()
-
-// watch(imageFile,(newFile)=>{
-// if(!newFile) return
-// formData.append('image',newFile)
-// console.log(newFile)
-// })
 
 function onFileChange() {
   if (imageFile.value && imageFile.value[0]) {
@@ -50,14 +43,22 @@ function onFileChange() {
 }
 
 const onOKClick = async () => {
-  onDialogOK()
-  formData.append('caption', caption.value)
-  formData.append('text', text.value)
-  formData.append('image', selectedFile.value)
-  // const newPost = {
-  //   caption: caption.value,
-  //   text: text.value,
-  // }
-  await postStore.createPost(formData)
+  loading.value=true
+ try {
+   if(!selectedFile.value) return
+   const formData = new FormData()
+   formData.append('caption', caption.value)
+   formData.append('text', text.value)
+   formData.append('image', selectedFile.value)
+   await postStore.createPost(formData)
+ }catch (error){
+    console.log(error.message)
+ }finally {
+    setTimeout(()=>{
+   loading.value=false
+   onDialogOK()
+    },1000)
+ }
+
 }
 </script>

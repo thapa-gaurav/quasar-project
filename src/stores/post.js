@@ -32,6 +32,7 @@ export const usePostStore = defineStore('posts', {
       try {
         const res = await axiosInstance.post('posts/store', formData, {
           headers: {
+            'Content-Type':'multipart/form-data',
             Authorization: 'Bearer ' + localStorage.getItem('userToken'),
           },
         })
