@@ -142,7 +142,6 @@ export const usePostStore = defineStore('posts', {
         if(!(res.statusText === 'OK')){
           console.log('Unable to detach image.')
         }else {
-          alert(res.data.message)
           await this.showPost(this.currentPost.id)
         }
       }catch (error){

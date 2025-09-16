@@ -16,9 +16,13 @@
         <q-td :props="props">
           <q-btn outline size="sms" @click="confirmDelete(props.row.id)">
             <q-icon name="delete" />
+            <q-tooltip :delay="500" :offset="[0, 10]">Delete user</q-tooltip>
+
           </q-btn>
           <q-btn outline size="sms" @click="edit(props.row)">
             <q-icon name="edit" />
+            <q-tooltip :delay="500" :offset="[0, 10]">Edit user</q-tooltip>
+
           </q-btn>
         </q-td>
       </template>

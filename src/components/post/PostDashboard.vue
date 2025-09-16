@@ -29,6 +29,7 @@
             @click="confirm(props.row.id)"
           >
             <q-icon name="delete" />
+            <q-tooltip :delay="500" :offset="[0, 10]">Delete post</q-tooltip>
           </q-btn>
           <q-btn
             v-if="hasRoles(['admin']) || hasPermissions(['edit_post'])"
@@ -37,6 +38,7 @@
             @click="edit(props.row)"
           >
             <q-icon name="edit" />
+            <q-tooltip :delay="500" :offset="[0, 10]">Edit post</q-tooltip>
           </q-btn>
           <q-btn
             v-if="hasRoles(['admin']) || hasPermissions(['read_post'])"
@@ -45,6 +47,7 @@
             @click="show(props.row.id)"
           >
             <q-icon name="visibility" />
+            <q-tooltip :delay="500" :offset="[0, 10]">Show post</q-tooltip>
           </q-btn>
         </q-td>
       </template>
@@ -55,12 +58,12 @@
 </template>
 
 <script setup>
-import { usePostStore } from 'src/stores/post'
+import { usePostStore } from 'stores/post.js'
 import { onMounted } from 'vue'
 import { useQuasar } from 'quasar'
 import EditPost from './EditPost.vue'
 import CreatePost from './CreatePost.vue'
-import ShowPost from 'components/ShowPost.vue'
+import ShowPost from 'components/post/ShowPost.vue'
 import { hasPermissions, hasRoles } from 'src/utils/roleAndPermissionHelper.js'
 
 const $q = useQuasar()

@@ -22,7 +22,7 @@
 <script setup>
 import {useDialogPluginComponent} from 'quasar'
 import {hasRoles} from "src/utils/roleAndPermissionHelper.js";
-import {usePostStore} from 'src/stores/post'
+import {usePostStore} from 'stores/post.js'
 import {ref} from 'vue'
 
 defineEmits([...useDialogPluginComponent.emits])

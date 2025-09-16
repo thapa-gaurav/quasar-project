@@ -36,6 +36,15 @@
           </q-avatar>
           Blog App
         </q-toolbar-title>
+        <div>
+          <q-toggle
+            v-model="darkMode"
+            checked-icon="dark_mode"
+            color="green"
+            unchecked-icon="light_mode"
+            @update:model-value="changeMode"
+          />
+        </div>
         <ProfileLogout v-if="authStore.isLoggedIn" />
       </q-toolbar>
     </q-header>
@@ -113,16 +122,18 @@ import { onBeforeMount, ref } from 'vue'
 import { useUserStore } from 'stores/userStore.js'
 import { useAuthStore } from 'stores/auth.js'
 import { hasRoles } from 'src/utils/roleAndPermissionHelper.js'
+import { useQuasar} from 'quasar'
 // import {useRouter} from "vue-router";
 const userStore = useUserStore()
 const authStore = useAuthStore()
 // const drawer = ref(false)
 const miniState = ref(false)
-// const router = useRouter()
+const $q = useQuasar()
+const darkMode = ref($q.dark.isActive)
 
-// const toggleDrawer = () =>{
-//   drawer.value = !drawer.value
-// }
+function  changeMode (){
+  $q.dark.set(!$q.dark.isActive)
+}
 
 onBeforeMount(async () => {
   await authStore.checkAuth()

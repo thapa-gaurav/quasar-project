@@ -22,7 +22,7 @@
 <script setup>
 import { useDialogPluginComponent } from 'quasar'
 // import router from 'src/router'
-import { usePostStore } from 'src/stores/post'
+import { usePostStore } from 'stores/post.js'
 import { ref } from 'vue'
 
 // const props = defineProps(['props'])

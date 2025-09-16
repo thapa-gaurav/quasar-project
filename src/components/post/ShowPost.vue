@@ -33,7 +33,7 @@
       <q-card-section class="flex flex-col gap-2">
         <q-btn label="Ok" @click="onOKClick" color="primary" />
         <q-btn :loading="loading" label="Replace" @click="replaceImg" color="secondary"/>
-        <q-btn label="Detach" @click="detachImg" class="bg-negative"/>
+        <q-btn :loading="loading2" label="Detach" @click="detachImg" class="bg-negative"/>
         <q-file ref="fileInput" v-model="selectedFile"  @update:model-value="onFileSelected" style="display: none"/>
       </q-card-section>
     </q-card>
@@ -42,7 +42,7 @@
 
 <script setup>
 import { useDialogPluginComponent } from 'quasar'
-import { usePostStore } from 'src/stores/post'
+import { usePostStore } from 'stores/post.js'
 import {ref} from 'vue'
 defineEmits([...useDialogPluginComponent.emits])
 const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent()
@@ -53,6 +53,7 @@ const postImage =  ref(postStore.currentPost.imageUrl)
 const selectedFile = ref(null)
 const fileInput = ref(null)
 const loading = ref(false)
+const loading2 = ref(false)
 function onOKClick() {
   onDialogOK()
 }
@@ -79,9 +80,16 @@ async function  onFileSelected(file){
 
 }
 async function detachImg(){
+  loading2.value = true
+  try {
   await postStore.detachImage()
   postImage.value  = postStore.currentPost.imageUrl
   console.log(postImage.value)
+  }catch (error){
+    console.log(error.message)
+  }finally {
+    loading2.value = false
+  }
   // postImage = postStore.currentPost.imageUrl
 }
 </script>
