@@ -21,14 +21,16 @@
 <!--  <div class="q-pa-md row items-start q-gutter-md">-->
     <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card class="my-card">
-      <img :src="`${postImage}`" alt="alternate image">
 
-      <q-card-section>
-        <div class="text-h6">{{thisPost.caption}}</div>
-      </q-card-section>
-
-      <q-card-section class="q-pt-none">
+      <q-img :src="`${postImage}`" alt="alternate image">
+        <div class="absolute-bottom text-subtitle1 text-center">
+          {{thisPost.caption}}
+        </div>
+      </q-img>
+      <h1>
         {{thisPost.text}}
+      </h1>
+      <q-card-section class="flex flex-col gap-2">
         <q-btn label="Ok" @click="onOKClick" color="primary" />
         <q-btn :loading="loading" label="Replace" @click="replaceImg" color="secondary"/>
         <q-btn label="Detach" @click="detachImg" class="bg-negative"/>

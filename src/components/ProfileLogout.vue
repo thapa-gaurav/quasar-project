@@ -1,7 +1,9 @@
 <template>
   <div class="flex items-center gap-2 bg-sky-200 shadow-md w-full max-w-md">
     <RouterLink to="/passchange">
+      <q-avatar>
       <img alt="Profile Picture" class="mx-auto block h-24 rounded-full" src="../assets/user.png" />
+      </q-avatar>
     </RouterLink>
     <div class="space-y-0.5">
       <p class="text-lg font-semibold text-black">
